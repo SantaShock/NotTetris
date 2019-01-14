@@ -63,7 +63,7 @@ int gameLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* background
 			//3.2: DO ROTATIONS/moveDir
 			if(spawned)
 			{
-				doRotation(Board,orientation);
+				doRotation(Board,&orientation);
 				doMovement(Board,&moveDir);
 			}
 			//3.3: DO TICKDROP

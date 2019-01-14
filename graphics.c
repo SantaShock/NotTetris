@@ -85,13 +85,13 @@ int drawNextPiece(SDL_Renderer* renderer, char** nextPieceDraw, int x, int y)
 {
 	int i,j;
 	unsigned int r,g,b;
-	for(i=3;i>-1;i--)
+	for(i=0;i<4;i++)
 	{
-		for(j=3;j>-1;j--)
+		for(j=0;j<4;j++)
 		{
 			evalBoard(nextPieceDraw[i][j],&r,&g,&b);
 			SDL_SetRenderDrawColor(renderer,r,g,b,255);
-			drawBlock(renderer,x+j*BLOCK_SIZE,WINDOW_HEIGHT-(y+(i+1)*BLOCK_SIZE));
+			drawBlock(renderer,x+j*BLOCK_SIZE,WINDOW_HEIGHT-(y+(4-i)*BLOCK_SIZE));
 		}
 	}
 	return 1;

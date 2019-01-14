@@ -180,19 +180,32 @@ int doMovement(char** Board, int* movement)
 
 int checkRotateCollision(char** Board, int newOrientation)
 {
-	
+	int i,j;
+	for(i=0;i<4;i++)
+	{
+		for(j=0;j<4;j++)
+		{
+			if(activePiece->shape[3-i+newOrientation*4][j] == 1)
+				if(Landed[activePiece->y+i-3][activePiece->x+j])
+					return 1;
+		}
+	}
 	return 0;
 }
 
 
-int doRotation(char** Board, int newOrientation)
+int doRotation(char** Board, int* newOrientation)
 {
-	if(!checkRotateCollision(Board, newOrientation))
+	if(!checkRotateCollision(Board, *newOrientation))
 	{
-		activePiece->orientation=newOrientation;
+		activePiece->orientation=*newOrientation;
 		return 1;
 	}
-	else return 0;
+	else 
+	{
+		*newOrientation=activePiece->orientation;
+		return 0;
+	}
 }
 
 int checkBelow(int orientation)
