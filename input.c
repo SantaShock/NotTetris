@@ -1,4 +1,5 @@
 #include <SDL.h>
+#include "definitions.h"
 
 int wrapUp(int* orientation)
 {
@@ -14,20 +15,37 @@ int wrapDown(int* orientation)
 
 //6 basic ass keybindings: space = speedup, left/right arrows = move left or right, 
 //  up/down = rotation, esc = pause
-int handleInput(SDL_Keysym key, int* orientation, int* speedup)
+int handleInput(SDL_Keysym key, int* orientation, int* speedup, int* movement)
 {
-	*speedup = 0;
-
 	switch(key.sym)
 	{
-		case SDLK_LEFT:
+		case SDLK_DOWN:
 			*orientation = wrapDown(orientation);
 			break;
-		case SDLK_RIGHT:
+		case SDLK_UP:
 			*orientation = wrapUp(orientation);
+			break;
+		case SDLK_LEFT:
+			*movement = -1;
+			break;
+		case SDLK_RIGHT:
+			*movement = 1;
+			break;
+		case SDLK_SPACE:
+			*speedup = 10;
 			break;
 		default:
 			break;
 	}
 	return 1;
+}
+
+int handleKeyRelease(SDL_Keysym key, int* speedup)
+{
+	if(key.sym == SDLK_SPACE)
+	{
+		*speedup = 0;
+		return 1;
+	}
+	else return 0;
 }

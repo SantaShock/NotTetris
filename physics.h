@@ -1,12 +1,11 @@
 #ifndef PHYSICS_H
 #define PHYSICS_H
 
-typedef struct TetrisPieces {
-	char pieceID;
-	unsigned int r;
-	unsigned int g;
-	unsigned int b;
-	int boundary;
-}TPiece;
+int spawnPiece(char** Board, char** nextPieceDraw, int* spawned, int pieceStats[7]);
+int updateBoard(char** Board);
+int doTickDrop(char** Board, int* spawned, int* orientation, int* linesCleared);
+int doRotation(char** Board, int orientation);
+int doMovement(char** Board, int* movement);
+int initPhysics();
 
 #endif /* PHYSICS_H_ */

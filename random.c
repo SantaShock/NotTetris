@@ -1,36 +1,25 @@
 #include <stdlib.h>
+#include <time.h>
 #include "random.h"
 
-int generator()
+int initRandom()
 {
-	time_t t;
+	static time_t t = time(NULL);
 	srand(t);
-	static int i = 0;
-	int j = rand()%8;
-	if(j==i) j=rand()%8;
-	while(j==8) j=rand()%8;
-	i = j;
-	return j;
 }
 
-char randomPiece()
+int generateRandom()
 {
-	int i = generator();
-	switch(i)
+	static int i = 25;
+	int j = rand()%7;
+	while(j==7) 
 	{
-		case 0:
-			return 'i';
-		case 1:
-			return 'o';
-		case 2:
-			return 't';
-		case 3:
-			return 's';
-		case 4:
-			return 'z';
-		case 5:
-			return 'j';
-		case 6:
-			return 'l';
+		j=rand()%7;
 	}
+	if(j==i) 
+	{
+		j=generateRandom();
+	}
+	i = j;
+	return j;
 }

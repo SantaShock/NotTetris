@@ -1,6 +1,7 @@
 #ifndef RANDOM_H
 #define RANDOM_H
 
-char randomPiece();
+int initRandom();
+int generateRandom();
 
 #endif /* RANDOM_H_ */
