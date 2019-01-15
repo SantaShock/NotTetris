@@ -1,7 +1,8 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
-#define WINDOW_HEIGHT 800
+//Dimension parameters
+#define WINDOW_HEIGHT 900
 #define WINDOW_WIDTH WINDOW_HEIGHT*1.5
 
 #define BOARD_HEIGHT 25
@@ -9,6 +10,7 @@
 
 #define BLOCK_SIZE (WINDOW_HEIGHT/20)
 
+//Colors
 #define BLACK 0,0,0,255
 #define WHITE 255,255,255,255
 #define DARK_GRAY 95,95,95,255
@@ -22,12 +24,19 @@
 #define ORANGE 255,165,0,255// L piece
 #define CYAN 0,255,255,255// I piece
 
+//Font parameters
+//font is called silkscreen
 #define FONT_NAME "slkscr.ttf"
-#define FONT_SIZE (BLOCK_SIZE+5)
+#define FONT_SIZE (BLOCK_SIZE*6/5)
 #define TEXT_COLOR 123,123,123
 
+//Game speed parameters
 #define BASE_SPEED 500
 #define SPEEDUP_MULTIPLIER 10
 #define LEVEL_MULTIPLIER 0.80
+
+//Spawn position of new pieces
+#define SPAWNOFFSETX 3
+#define SPAWNOFFSETY 20
 
 #endif /* DEFINITIONS_H */

@@ -1,9 +1,6 @@
 #ifndef PIECES_H
 #define PIECES_H
 
-#define SPAWNOFFSETX 3
-#define SPAWNOFFSETY 15
-
 typedef struct TetrisPieces /* holds information of the tetris pieces */
 {
 	char ID;

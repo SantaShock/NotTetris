@@ -71,6 +71,7 @@ int spawnPiece(char** Board, char** nextPieceDraw, int* spawned, int pieceStats[
 		}
 	}
 	*spawned = 1;
+	return 1;
 }
 
 int checkRight(char** Board)
@@ -346,6 +347,16 @@ int doTickDrop(char** Board, int* spawned, int* orientation, int* linesCleared)
 		*spawned = 0;
 		*orientation = 0;
 		addActiveToLanded();
-		*linesCleared += checkRowClear(Board);
+		*linesCleared = checkRowClear(Board);
 	}
+}
+
+int checkBoard()
+{
+	int i;
+	for(i=0;i<BOARD_WIDTH;i++)
+	{
+		if(Landed[20][i] == 1) return 1;
+	}
+	return 0;
 }

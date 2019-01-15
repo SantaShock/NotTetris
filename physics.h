@@ -6,6 +6,7 @@ int updateBoard(char** Board);
 int doTickDrop(char** Board, int* spawned, int* orientation, int* linesCleared);
 int doRotation(char** Board, int* orientation);
 int doMovement(char** Board, int* movement);
+int checkBoard();
 int initPhysics();
 
 #endif /* PHYSICS_H_ */

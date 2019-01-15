@@ -1,5 +1,6 @@
 #include "pieces.h"
 #include "random.h"
+#include "definitions.h"
 
 static TPiece testPC = {'i',0,0,0,
 	1,1,1,1,

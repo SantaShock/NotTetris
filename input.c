@@ -15,7 +15,7 @@ int wrapDown(int* orientation)
 
 //6 basic ass keybindings: space = speedup, left/right arrows = move left or right, 
 //  up/down = rotation, esc = pause
-int handleInput(SDL_Keysym key, int* orientation, int* speedup, int* movement)
+int handleInput(SDL_Keysym key, int* orientation, int* speedup, int* movement, int* pause)
 {
 	switch(key.sym)
 	{
@@ -32,7 +32,13 @@ int handleInput(SDL_Keysym key, int* orientation, int* speedup, int* movement)
 			*movement = 1;
 			break;
 		case SDLK_SPACE:
-			*speedup = 10;
+			if(*pause)
+				*pause = 0;
+			else
+				*speedup = 10;
+			break;
+		case SDLK_ESCAPE:
+			*pause = 1;
 			break;
 		default:
 			break;
