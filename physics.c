@@ -27,37 +27,10 @@ int initPhysics()
 	nextPiece = getNewPiece(trash);
 }
 
-int updateBoard(char** Board)
-{
-	int i,j;
-	//clear out previous position
-	for(i=0;i<BOARD_HEIGHT;i++)
-	{
-		for(j=0;j<BOARD_WIDTH;j++)
-		{
-			if((Board[i][j]!=' ') && (Landed[i][j]==0)) 
-			{
-				Board[i][j] = ' ';
-			}
-		}
-	}
-	//add new piece to the grid
-	for(i=0;i<4;i++)
-	{
-		for(j=0;j<4;j++)
-		{
-			if(i+activePiece->y-3>=0)
-			{
-				if(activePiece->shape[3-i+activePiece->orientation*4][j]==1)
-					Board[i+activePiece->y-3][j+activePiece->x]=activePiece->ID;
-			}
-		}
-	}
-}
-
 int spawnPiece(char** Board, char** nextPieceDraw, int* spawned, int pieceStats[7])
 {
 	int i,j;
+	*spawned = 1;
 	activePiece = nextPiece;
 	nextPiece = getNewPiece(pieceStats);
 	//pass data of next piece back
@@ -70,7 +43,7 @@ int spawnPiece(char** Board, char** nextPieceDraw, int* spawned, int pieceStats[
 				nextPieceDraw[i][j] = nextPiece->ID;
 		}
 	}
-	*spawned = 1;
+	printf("%c->%c\n",activePiece->ID,nextPiece->ID);
 	return 1;
 }
 
@@ -85,7 +58,7 @@ int checkRight(char** Board)
 			{
 				if(activePiece->shape[3-i+activePiece->orientation*4][j]==1)
 				{
-					if(Landed[activePiece->y+i-3][activePiece->x+j+1])
+					if(Landed[activePiece->y+i-3][activePiece->x+j+1] == 1)
 					{
 						return 1;
 					}
@@ -107,7 +80,7 @@ int checkLeft(char** Board)
 			{
 				if(activePiece->shape[3-i+activePiece->orientation*4][j]==1)
 				{
-					if(Landed[activePiece->y+i-3][activePiece->x+j-1])
+					if(Landed[activePiece->y+i-3][activePiece->x+j-1] == 1)
 					{
 						return 1;
 					}
@@ -186,9 +159,20 @@ int checkRotateCollision(char** Board, int newOrientation)
 	{
 		for(j=0;j<4;j++)
 		{
-			if(activePiece->shape[3-i+newOrientation*4][j] == 1)
-				if(Landed[activePiece->y+i-3][activePiece->x+j])
-					return 1;
+			if((i+activePiece->y-3>=0) && (j+activePiece->x >= 0) && (j+activePiece->x <= 9))
+			{
+				if(activePiece->shape[3-i+newOrientation*4][j]==1)
+				{ 
+					if(Landed[activePiece->y+i-3][activePiece->x+j] == 1) 
+					{
+						return 1;
+					}
+				}
+			}
+			else
+			{
+				return 1;
+			}
 		}
 	}
 	return 0;
@@ -220,7 +204,7 @@ int checkBelow(int orientation)
 			{
 				if(activePiece->shape[3-i+activePiece->orientation*4][j]==1)
 				{
-					if(Landed[activePiece->y+i-3-1][activePiece->x+j])
+					if(Landed[activePiece->y+i-3-1][activePiece->x+j]==1)
 					{
 						return 1;
 					}
@@ -253,7 +237,7 @@ int checkDropCollision(char** Board, int orientation)
 	else return 0;
 }
 
-int addActiveToLanded()
+int addActiveToLanded(char** Board)
 {
 	int i,j;
 	for(i=0;i<4;i++)
@@ -269,6 +253,20 @@ int addActiveToLanded()
 			}
 		}
 	}
+	for(i=0;i<4;i++)
+	{
+		for(j=0;j<4;j++)
+		{
+			if(i+activePiece->y-3>=0)
+			{
+				if(activePiece->shape[3-i+activePiece->orientation*4][j]==1)
+					Board[i+activePiece->y-3][j+activePiece->x]=activePiece->ID;
+			}
+		}
+	}
+	activePiece->x = 3;
+	activePiece->y = 23;
+	return 1;
 }
 
 int swapBoard(char** Board, int row)
@@ -344,10 +342,10 @@ int doTickDrop(char** Board, int* spawned, int* orientation, int* linesCleared)
 	//also add piece to the Landed array
 	else 
 	{
-		*spawned = 0;
-		*orientation = 0;
-		addActiveToLanded();
+		addActiveToLanded(Board);
 		*linesCleared = checkRowClear(Board);
+		*orientation = 0;
+		*spawned = 0;
 	}
 }
 
@@ -356,7 +354,95 @@ int checkBoard()
 	int i;
 	for(i=0;i<BOARD_WIDTH;i++)
 	{
-		if(Landed[20][i] == 1) return 1;
+		if(Landed[19][i] == 1) return 1;
 	}
 	return 0;
+}
+
+
+int doPieceProjection(char** Board)
+{
+	int i,j;
+	//save current y of piece
+	int temp = activePiece->y;
+	//move piece as far down as possible
+	while((activePiece!=NULL) && (!checkDropCollision(Board, activePiece->orientation)))
+	{
+		activePiece->y--;
+	}
+	//add projection to board
+	for(i=0;i<4;i++)
+	{
+		for(j=0;j<4;j++)
+		{
+			if(i+activePiece->y-3>=0)
+			{
+				if(activePiece->shape[3-i+activePiece->orientation*4][j]==1)
+					Landed[i+activePiece->y-3][j+activePiece->x]=2;
+			}
+		}
+	}
+	activePiece->y = temp;
+	return 1;
+}
+
+
+int updateBoard(char** Board)
+{
+	int i,j;
+	for(i=0;i<BOARD_HEIGHT;i++)
+	{
+		for(j=0;j<BOARD_WIDTH;j++)
+		{
+			//clear previous projection
+			if(Landed[i][j]==2)
+			{
+				Landed[i][j] = 0;
+			}
+			//clear out previous position
+			if((Board[i][j]!=' ') && (Landed[i][j]!=1)) 
+			{
+				Board[i][j] = ' ';
+			}
+		}
+	}
+	//add new projection
+	doPieceProjection(Board);
+
+	for(i=0;i<BOARD_HEIGHT;i++)
+	{
+		for(j=0;j<BOARD_WIDTH;j++)
+		{
+			if(Landed[i][j] == 2)
+			{
+				Board[i][j] = 'x';
+			}
+		}
+	}
+	//add new piece to the grid
+	for(i=0;i<4;i++)
+	{
+		for(j=0;j<4;j++)
+		{
+			if(i+activePiece->y-3>=0)
+			{
+				if(activePiece->shape[3-i+activePiece->orientation*4][j]==1)
+					Board[i+activePiece->y-3][j+activePiece->x]=activePiece->ID;
+			}
+		}
+	}
+}
+
+int resetBoard(char** Board)
+{
+	int i,j;
+	for(i=0;i<BOARD_HEIGHT;i++)
+	{
+		for(j=0;j<BOARD_WIDTH;j++)
+		{
+			Board[i][j] = ' ';
+			Landed[i][j] = 0;
+		}
+	}
+	return 1;
 }

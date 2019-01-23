@@ -33,10 +33,10 @@
 //Game speed parameters
 #define BASE_SPEED 500
 #define SPEEDUP_MULTIPLIER 10
-#define LEVEL_MULTIPLIER 0.80
+#define LEVEL_MULTIPLIER 0.90
 
 //Spawn position of new pieces
 #define SPAWNOFFSETX 3
-#define SPAWNOFFSETY 20
+#define SPAWNOFFSETY 21
 
 #endif /* DEFINITIONS_H */

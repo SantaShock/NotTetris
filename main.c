@@ -9,6 +9,7 @@
 
 #include "gameloop.h"
 #include "intro.h"
+#include "outro.h"
 #include "physics.h"
 
 #include "random.h"
@@ -16,7 +17,6 @@
 int main(int argc, char* args[])
 {
 //INITS
-	initPhysics();
 	//VARIABLES
 	int i,j;
 	char** Board = NULL;
@@ -25,6 +25,7 @@ int main(int argc, char* args[])
 	SDL_Renderer* renderer = NULL;
 	SDL_Surface* backgroundSurface = NULL;
 	SDL_Texture* backgroundTexture = NULL;
+	SDL_Texture* sShotTexture = NULL;
 	//Memeory-allocations
 	//Array to hold data on upcoming piece
 	nextPiece = (char**)malloc(4*sizeof(char*));
@@ -53,12 +54,26 @@ int main(int argc, char* args[])
 	TTF_Font* font = TTF_OpenFont(FONT_NAME,FONT_SIZE);
 	//Keep track of score across stages of the game
 	int score = 0;
+	//Keep track if the user wants to keep playing
+	int keepPlaying = 1;
+	do
+	{
+//Init game variables
+		initPhysics();
 //TBD: start/instruction screen
-	if(introLoop(window,renderer,backgroundTexture,font) == 1)
+		if(introLoop(window,renderer,backgroundTexture,font) == 1)
 //START GAME
-		gameLoop(window, renderer, backgroundTexture, Board, nextPiece, font, &score);
+		{
+			score = 0;
+			if(gameLoop(window, renderer, backgroundTexture, Board, nextPiece, font, &score, sShotTexture) == 1)
 //TBD: game over / score submit screen
-	printf("game over, score: %d\n",score);
+			{
+				keepPlaying = outroLoop(window,renderer,backgroundTexture,font,score);
+			}
+			else keepPlaying = 0;
+		}
+		else keepPlaying = 0;
+	}while(keepPlaying==1);
 //CLEANUP
 	//SDL
 	if (renderer) SDL_DestroyRenderer(renderer);

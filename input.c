@@ -19,10 +19,10 @@ int handleInput(SDL_Keysym key, int* orientation, int* speedup, int* movement, i
 {
 	switch(key.sym)
 	{
-		case SDLK_DOWN:
+		case SDLK_q:
 			*orientation = wrapDown(orientation);
 			break;
-		case SDLK_UP:
+		case SDLK_e:
 			*orientation = wrapUp(orientation);
 			break;
 		case SDLK_LEFT:

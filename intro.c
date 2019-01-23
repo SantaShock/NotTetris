@@ -22,7 +22,7 @@ int introLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* backgroun
 	{
 		sprintf(text,"INSTRUCTIONS");
 		drawText(renderer,font,50,50,text);
-		sprintf(text,"Rotate: Up/Down arrow");
+		sprintf(text,"Rotate: Q/E");
 		drawText(renderer,font,50,100,text);
 		sprintf(text,"Move: Left/Right arrow");
 		drawText(renderer,font,50,150,text);

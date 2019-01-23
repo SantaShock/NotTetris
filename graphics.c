@@ -58,10 +58,16 @@ int evalBoard(char currentCell, unsigned int* r, unsigned int* g, unsigned int* 
 			*g = 5;
 			*b = 5;
 			return 6;
+		case 'x':
+			*r = 200;
+			*g = 200;
+			*b = 200;
+			return 7;
 		default:
 			*r = 110;
 			*g = 110;
 			*b = 110;
+			return -1;
 	}
 }
 
@@ -159,4 +165,13 @@ int drawStats(SDL_Renderer* renderer, TTF_Font* font, int pieceStats[7])
 		sprintf(text,"%d: %d",i,pieceStats[i]);
 		drawText(renderer,font,2*BLOCK_SIZE + 20,WINDOW_HEIGHT/3+FONT_SIZE*(i+1),text);
 	}
+}
+
+int captureScreen(SDL_Renderer* renderer, SDL_Texture* texture)
+{
+	SDL_Surface* surface = SDL_CreateRGBSurface(0,WINDOW_WIDTH,WINDOW_HEIGHT,32,0x00ff0000,0x0000ff00,0x000000ff,0xff000000);
+	SDL_RenderReadPixels(renderer,NULL,SDL_PIXELFORMAT_ARGB8888, surface->pixels,surface->pitch);
+	texture = SDL_CreateTextureFromSurface(renderer,surface);
+	SDL_FreeSurface(surface);
+	return 1;
 }

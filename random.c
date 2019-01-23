@@ -36,8 +36,7 @@ int generateRandom()
 {
 	int i,j;
 	static int n = 0;
-	printf("%d\n",n);
-	if(n==6)
+	if(n==7)
 	{ 
 		generateSequence();
 		n=0;
@@ -52,20 +51,4 @@ int generateRandom()
 			return j;
 		}
 	}
-}
-
-int generateRandom2()
-{
-	static int i = 25;
-	int j = rand()%7;
-	while(j==7) 
-	{
-		j=rand()%7;
-	}
-	if(j==i) 
-	{
-		j=generateRandom();
-	}
-	i = j;
-	return j;
 }

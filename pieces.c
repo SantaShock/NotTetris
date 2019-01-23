@@ -211,8 +211,9 @@ TPiece* getNewPiece(int pieceStats[7])
 			pieceStats[6]++;
 			break;
 	}
-	//pie
-	//piece = &iPC;
+	//Manuel piece override
+	//piece = &sPC;
+	//Piece placement
 	piece->x = SPAWNOFFSETX;
 	piece->y = SPAWNOFFSETY;
 	return piece;

@@ -35,7 +35,29 @@ int calculateScore(int* currentLinesCleared,int* score, int level, int dropStrea
 	return 1;
 }
 
-int gameLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* backgroundTexture, char** Board, char** nextPiece, TTF_Font* font, int* score)
+int countDown(SDL_Window* window, SDL_Renderer* renderer,TTF_Font* font)
+{
+	char text[100];
+	sprintf(text,"  3 ");
+    drawText(renderer,font,WINDOW_WIDTH/2,WINDOW_HEIGHT/2,text);
+    SDL_RenderPresent(renderer);
+	SDL_Delay(BASE_SPEED);
+	sprintf(text,"  2 ");
+    drawText(renderer,font,WINDOW_WIDTH/2,WINDOW_HEIGHT/2,text);
+    SDL_RenderPresent(renderer);
+	SDL_Delay(BASE_SPEED);
+	sprintf(text,"  1 ");
+    drawText(renderer,font,WINDOW_WIDTH/2,WINDOW_HEIGHT/2,text);
+    SDL_RenderPresent(renderer);
+	SDL_Delay(BASE_SPEED);
+	sprintf(text," GO! ");
+    drawText(renderer,font,WINDOW_WIDTH/2,WINDOW_HEIGHT/2,text);
+    SDL_RenderPresent(renderer);
+	SDL_Delay(BASE_SPEED);
+	return 1;
+}
+
+int gameLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* backgroundTexture, char** Board, char** nextPiece, TTF_Font* font, int* score, SDL_Texture* sShotTexture)
 {
 	//Timings
 	unsigned int lastTime = 0, currentTime = 1;
@@ -56,11 +78,15 @@ int gameLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* background
 	int orientation = 0;
 	int moveDir = 0;
 	int speedup = 0;
+	int receivedInput = 0;
 	//Text array
 	char text[100];
 	//DRAW BACKGROUND
 	SDL_RenderCopy(renderer,backgroundTexture,NULL,NULL);
+	//Reset Arrays
+	resetBoard(Board);
 	//GAME LOOP
+	countDown(window,renderer,font);
 	while(!gameOver)
 	{
 		//Timings
@@ -69,11 +95,10 @@ int gameLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* background
 		//1: RENDER
 		drawBoard(renderer, Board, WINDOW_WIDTH/3, 0);
 		SDL_RenderPresent(renderer);
-		if(spawned) drawNextPiece(renderer, nextPiece, 2*BLOCK_SIZE , WINDOW_HEIGHT - 6*BLOCK_SIZE);
 		//2: HANLDE INPUT
 		while (SDL_PollEvent(&event))
         {
-            if (event.type == SDL_QUIT) gameOver = 1;
+            if (event.type == SDL_QUIT) return -1;
  	        else if(event.type == SDL_KEYDOWN) handleInput(event.key.keysym,&orientation,&speedup,&moveDir,&doPause);
  	        else if(event.type == SDL_KEYUP) handleKeyRelease(event.key.keysym,&speedup);
     	}
@@ -91,6 +116,7 @@ int gameLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* background
 			//3.1: SPAWN PIECE IF NO PIECE CURRENTLY SPAWNED
     		if(!spawned)
     		{
+    			printf("spawning\n");
     			spawnPiece(Board, nextPiece, &spawned, pieceStats);
     			//Update text everytime a new piece is spawned
     			drawNextPiece(renderer, nextPiece, 2*BLOCK_SIZE , WINDOW_HEIGHT - 6*BLOCK_SIZE);
@@ -138,5 +164,7 @@ int gameLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* background
         }
         lastTime = currentTime;
 	}
+	//get screen pixel data for outro
+	captureScreen(renderer,sShotTexture);
 	return 1;
 }
