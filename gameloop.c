@@ -57,7 +57,7 @@ int countDown(SDL_Window* window, SDL_Renderer* renderer,TTF_Font* font)
 	return 1;
 }
 
-int gameLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* backgroundTexture, char** Board, char** nextPiece, TTF_Font* font, int* score, SDL_Texture* sShotTexture)
+int gameLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* backgroundTexture, char** Board, char** nextPiece, TTF_Font* font, int* score, SDL_Texture* sShotTexture, int pieceStats[7])
 {
 	//Timings
 	unsigned int lastTime = 0, currentTime = 1;
@@ -73,7 +73,7 @@ int gameLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* background
 	int totalLinesCleared = 0;
 	int currentSoftDrop = 0;
 	int level = 0;
-	int pieceStats[7] = {0,0,0,0,0,0,0};
+	//int pieceStats[7] = {0,0,0,0,0,0,0};
 	//Input variables
 	int orientation = 0;
 	int moveDir = 0;
@@ -116,7 +116,6 @@ int gameLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* background
 			//3.1: SPAWN PIECE IF NO PIECE CURRENTLY SPAWNED
     		if(!spawned)
     		{
-    			printf("spawning\n");
     			spawnPiece(Board, nextPiece, &spawned, pieceStats);
     			//Update text everytime a new piece is spawned
     			drawNextPiece(renderer, nextPiece, 2*BLOCK_SIZE , WINDOW_HEIGHT - 6*BLOCK_SIZE);

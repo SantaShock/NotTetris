@@ -9,11 +9,10 @@ static int** Landed;
 static TPiece* activePiece = NULL;
 static TPiece* nextPiece = NULL;
 
-int initPhysics()
+int initPhysics(int pieceStats[7])
 {
 	initPieces();
 	int i,j;
-	int trash[7];
 	Landed = (int**)malloc(BOARD_HEIGHT*sizeof(int*));
 	for(i=0;i<BOARD_HEIGHT;i++) Landed[i]=(int*)malloc(BOARD_WIDTH*sizeof(int));
 
@@ -24,7 +23,7 @@ int initPhysics()
 			Landed[i][j] = 0;
 		}
 	}
-	nextPiece = getNewPiece(trash);
+	nextPiece = getNewPiece(pieceStats);
 }
 
 int spawnPiece(char** Board, char** nextPieceDraw, int* spawned, int pieceStats[7])
@@ -43,7 +42,6 @@ int spawnPiece(char** Board, char** nextPieceDraw, int* spawned, int pieceStats[
 				nextPieceDraw[i][j] = nextPiece->ID;
 		}
 	}
-	printf("%c->%c\n",activePiece->ID,nextPiece->ID);
 	return 1;
 }
 
@@ -159,20 +157,40 @@ int checkRotateCollision(char** Board, int newOrientation)
 	{
 		for(j=0;j<4;j++)
 		{
-			if((i+activePiece->y-3>=0) && (j+activePiece->x >= 0) && (j+activePiece->x <= 9))
+			if(activePiece->ID == 'i')
 			{
-				if(activePiece->shape[3-i+newOrientation*4][j]==1)
-				{ 
-					if(Landed[activePiece->y+i-3][activePiece->x+j] == 1) 
-					{
-						return 1;
+				if((i+activePiece->y-3>=0) && (j+activePiece->x >= 0) && (j+activePiece->x <= 9))
+				{
+					if(activePiece->shape[3-i+newOrientation*4][j]==1)
+					{ 
+						if(Landed[activePiece->y+i-3][activePiece->x+j] == 1) 
+						{
+							return 1;
+						}
 					}
+				}
+				else
+				{
+					return 1;
 				}
 			}
 			else
 			{
-				return 1;
-			}
+				if((i+activePiece->y-3>=0) && (j+activePiece->x >= 0) && (j+activePiece->x <= 10))
+				{
+					if(activePiece->shape[3-i+newOrientation*4][j]==1)
+					{ 
+						if(Landed[activePiece->y+i-3][activePiece->x+j] == 1) 
+						{
+							return 1;
+						}
+					}
+				}
+				else
+				{
+					return 1;
+				}	
+			}	
 		}
 	}
 	return 0;

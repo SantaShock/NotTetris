@@ -2,7 +2,7 @@
 #define DEFINITIONS_H
 
 //Dimension parameters
-#define WINDOW_HEIGHT 900
+#define WINDOW_HEIGHT 1000
 #define WINDOW_WIDTH WINDOW_HEIGHT*1.5
 
 #define BOARD_HEIGHT 25
@@ -25,10 +25,21 @@
 #define CYAN 0,255,255,255// I piece
 
 //Font parameters
-//font is called silkscreen
 #define FONT_NAME "slkscr.ttf"
-#define FONT_SIZE (BLOCK_SIZE*6/5)
+//#define FONT_SIZE (BLOCK_SIZE*6/5)
+#define FONT_SIZE 50
 #define TEXT_COLOR 123,123,123
+#define TEXT_GREEN 5,255,5
+#define TEXT_RED 255,5,5
+#define TEXT_BLUE 5,5,255
+#define TEXT_YELLOW 255,255,0
+#define TEXT_PURPLE 128,0,128
+#define TEXT_ORANGE 255,165,0
+#define TEXT_CYAN 0,255,255
+
+//Score/FileIO parameters
+#define SCORE_FILE_NAME "scores.dat"
+#define SAVED_SCORES_AMOUNT 20
 
 //Game speed parameters
 #define BASE_SPEED 500

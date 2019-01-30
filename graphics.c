@@ -108,7 +108,7 @@ int drawText(SDL_Renderer* renderer, TTF_Font* font, int x, int y, char text[100
 	int i;
 	//inits
 	SDL_Color Test = {TEXT_COLOR};
-	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, text,Test);
+	SDL_Surface* surfaceMessage = TTF_RenderText_Blended(font, text,Test);
 	SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer,surfaceMessage);
 	SDL_Rect Message_rect;
 	Message_rect.x = x;
@@ -135,6 +135,64 @@ int drawText(SDL_Renderer* renderer, TTF_Font* font, int x, int y, char text[100
 	SDL_DestroyTexture(Message);
 }
 
+
+int drawTextSettings(SDL_Renderer* renderer, TTF_Font* font, int x, int y, char text[100], char color, int fontSize)
+{
+	int i;
+	//color
+	SDL_Color textColor;
+	switch(color)
+	{
+		case 'g':
+			textColor = {TEXT_GREEN};
+			break;
+		case 'r':
+			textColor = {TEXT_RED};
+			break;
+		case 'b':
+			textColor = {TEXT_BLUE};
+			break;
+		case 'y':
+			textColor = {TEXT_YELLOW};
+			break;
+		case 'p':
+			textColor = {TEXT_PURPLE};
+			break;
+		case 'o':
+			textColor = {TEXT_ORANGE};
+			break;
+		case 'c':
+			textColor = {TEXT_CYAN};
+			break;
+		default:
+			textColor = {TEXT_COLOR};
+			break;
+	}
+	//inits
+	SDL_Surface* surfaceMessage = TTF_RenderText_Blended(font, text,textColor);
+	SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer,surfaceMessage);
+	SDL_Rect Message_rect;
+	Message_rect.w = 0;
+
+	for(i=0;i<100;i++)
+	{
+		if(text[i]=='\0')
+		{
+			Message_rect.w = i*(fontSize*6/6);
+			break;	
+		}
+	}
+	//if(Message_rect.w == 0) Message_rect.w = 100;
+	Message_rect.h = 2*fontSize;
+	Message_rect.x = x - (Message_rect.w/2);
+	Message_rect.y = y - (Message_rect.h/2);
+	//draw text
+	SDL_RenderCopy(renderer, Message, NULL, &Message_rect);
+	//cleanup
+	SDL_FreeSurface(surfaceMessage);
+	SDL_DestroyTexture(Message);
+}
+
 int drawScores(SDL_Renderer* renderer, TTF_Font* font, int linesCleared, int level, int score)
 {
 	char text[100];
@@ -151,10 +209,41 @@ int drawScores(SDL_Renderer* renderer, TTF_Font* font, int linesCleared, int lev
 
 }
 
+char translateIntToChar(int n)
+{
+	char ch;
+	switch(n)
+	{
+		case 0:
+			ch = 'i';
+			break;
+		case 1:
+			ch = 'o';
+			break;
+		case 2:
+			ch = 't';
+			break;
+		case 3:
+			ch = 's';
+			break;
+		case 4:
+			ch = 'z';
+			break;
+		case 5:
+			ch = 'j';
+			break;
+		case 6:
+			ch = 'l';
+			break;
+	}
+	return ch;
+}
+
 int drawStats(SDL_Renderer* renderer, TTF_Font* font, int pieceStats[7])
 {
 	//RIGHT SIDE
-	int i;
+	int i = 0;
+	char ch = ' ';
 	char text[100];
 	strcpy(text,"NEXT");
 	drawText(renderer,font,2*BLOCK_SIZE,5,text);
@@ -162,7 +251,7 @@ int drawStats(SDL_Renderer* renderer, TTF_Font* font, int pieceStats[7])
 	drawText(renderer,font,2*BLOCK_SIZE,WINDOW_HEIGHT/3,text);
 	for(i=0;i<7;i++)
 	{
-		sprintf(text,"%d: %d",i,pieceStats[i]);
+		sprintf(text,"%c: %d",translateIntToChar(i),pieceStats[i]);
 		drawText(renderer,font,2*BLOCK_SIZE + 20,WINDOW_HEIGHT/3+FONT_SIZE*(i+1),text);
 	}
 }

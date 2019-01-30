@@ -8,6 +8,6 @@ int doRotation(char** Board, int* orientation);
 int doMovement(char** Board, int* movement);
 int resetBoard(char** Board);
 int checkBoard();
-int initPhysics();
+int initPhysics(int pieceStats[7]);
 
 #endif /* PHYSICS_H_ */

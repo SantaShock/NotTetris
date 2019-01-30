@@ -11,6 +11,7 @@ int generateSequence()
 	int i,j,temp;
 	for(i=0;i<7;i++)
 	{
+		pieceBag[i] = 0;
 		pieceBag[i]=baseBag[i];
 	}
 	

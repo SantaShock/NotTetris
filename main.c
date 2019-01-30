@@ -41,8 +41,9 @@ int main(int argc, char* args[])
 			Board[i][j] = ' ';
 		}
 	}
+	//SDL INITS
 	if(SDL_Init(SDL_INIT_VIDEO)) exit(1);
-	window = SDL_CreateWindow("NOT tetris",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,WINDOW_WIDTH,WINDOW_HEIGHT,0);
+	window = SDL_CreateWindow("NOTetris",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,WINDOW_WIDTH,WINDOW_HEIGHT,0);
 	renderer = SDL_CreateRenderer(window,-1,0);
 	//init surfaces for background and for drawing the game
 	backgroundSurface = SDL_LoadBMP("bg.bmp");
@@ -52,20 +53,24 @@ int main(int argc, char* args[])
 	//init ttf and font
 	if(TTF_Init() == -1) exit(1);
 	TTF_Font* font = TTF_OpenFont(FONT_NAME,FONT_SIZE);
+	if(!font) exit(1);
+	//Game Variables
+	//Keep track of how many of each pieces occured
+	int pieceStats[7] = {0,0,0,0,0,0,0};
 	//Keep track of score across stages of the game
 	int score = 0;
 	//Keep track if the user wants to keep playing
 	int keepPlaying = 1;
 	do
 	{
-//Init game variables
-		initPhysics();
 //TBD: start/instruction screen
 		if(introLoop(window,renderer,backgroundTexture,font) == 1)
 //START GAME
 		{
+			//init game variables
+			initPhysics(pieceStats);
 			score = 0;
-			if(gameLoop(window, renderer, backgroundTexture, Board, nextPiece, font, &score, sShotTexture) == 1)
+			if(gameLoop(window, renderer, backgroundTexture, Board, nextPiece, font, &score, sShotTexture, pieceStats) == 1)
 //TBD: game over / score submit screen
 			{
 				keepPlaying = outroLoop(window,renderer,backgroundTexture,font,score);

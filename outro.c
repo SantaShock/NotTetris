@@ -12,11 +12,8 @@
 #include "graphics.h"
 #include "physics.h"
 #include "input.h"
+#include "scores.h"
 
-int saveScore(char* text, int score)
-{
-	return 1;
-}
 
 int removeLast(char* text)
 {
@@ -35,26 +32,28 @@ int removeLast(char* text)
 int showPrompt(SDL_Renderer* renderer, TTF_Font* font,int score, char text[100], char inputText[100])
 {
 	sprintf(text,"GAME OVER!");
-	drawText(renderer,font,WINDOW_WIDTH/3,WINDOW_HEIGHT/2,text);
+	drawTextSettings(renderer,font,WINDOW_WIDTH/2,WINDOW_HEIGHT*6/18,text,'r',40);
 	sprintf(text,"Your score: %d",score);
-	drawText(renderer,font,WINDOW_WIDTH/3,WINDOW_HEIGHT/2+50,text);		sprintf(text,"Enter your name:");
-	drawText(renderer,font,WINDOW_WIDTH/3,WINDOW_HEIGHT/2+100,text);
-	drawText(renderer,font,WINDOW_WIDTH/3,WINDOW_HEIGHT/2+150,inputText);
+	drawTextSettings(renderer,font,WINDOW_WIDTH/2,WINDOW_HEIGHT*8/18,text,' ',25);		
+	sprintf(text,"Enter your name:");
+	drawTextSettings(renderer,font,WINDOW_WIDTH/2,WINDOW_HEIGHT*10/18,text,' ',25);
+	drawTextSettings(renderer,font,WINDOW_WIDTH/2,WINDOW_HEIGHT*11/18,inputText,' ',25);
 }
 
-int showHighscores(SDL_Renderer* renderer, TTF_Font* font)
+int showHighscores(SDL_Renderer* renderer, TTF_Font* font, int highScore, int lowScore, TScore* Highscores)
 {
 	char text[100];
 	sprintf(text,"HIGHSCORES");
-	drawText(renderer,font,WINDOW_WIDTH/3,WINDOW_HEIGHT/10,text);
+	drawTextSettings(renderer,font,WINDOW_WIDTH/2,WINDOW_HEIGHT*2/18,text,'r',40);
 	sprintf(text,"Press ESC to quit, press SPACEBAR to play again");
-	drawText(renderer,font,WINDOW_WIDTH/5,WINDOW_HEIGHT/10*9,text);
+	drawTextSettings(renderer,font,WINDOW_WIDTH/2,WINDOW_HEIGHT*16/18,text,' ',25);
 
 	int i;
-	for(i=1;i<8;i++)
+	for(i=highScore;i<lowScore+1;i++)
 	{
-		sprintf(text,"%d): %s: %6d",i,"NAME",0);
-		drawText(renderer,font,WINDOW_WIDTH/3,WINDOW_HEIGHT/11*(i+1),text);
+		//sprintf(text,"%d): %s: %6d",i,"NAME",0);
+		sprintf(text,"%d): %s: %6d",i,Highscores[i-1].name,Highscores[i-1].score);
+		drawTextSettings(renderer,font,WINDOW_WIDTH/2,WINDOW_HEIGHT*(i+3-highScore+1)/18,text,' ',20);
 	}
 }
 
@@ -67,12 +66,16 @@ int outroLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* backgroun
 	char inputText[100];
 	int cursor;
 	int i = 0;
+	int highScore = 1;
+	int lowScore = 10;
 	for(i=0;i<100;i++)
 	{
 		inputText[i]='\0';
 	}
 	SDL_RenderCopy(renderer,backgroundTexture,NULL,NULL);
 	SDL_StartTextInput();
+	TScore* Highscores = (TScore*)malloc(SAVED_SCORES_AMOUNT*sizeof(TScore));
+	if(!Highscores) exit(1);
 	while(!go)
 	{
 		SDL_RenderCopy(renderer,backgroundTexture,NULL,NULL);
@@ -82,7 +85,7 @@ int outroLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* backgroun
 		}
 		else
 		{
-			showHighscores(renderer,font);
+			showHighscores(renderer,font, highScore,lowScore, Highscores);
 		}
 		SDL_RenderPresent(renderer);
 		while(SDL_PollEvent(&event))
@@ -99,10 +102,11 @@ int outroLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* backgroun
 						cursor--;
 					}
 					else if((event.key.keysym.sym == SDLK_RETURN) && (cursor>0))
-						{
-							saveScore(inputText,score);
-							promptDone = 1;
-						}
+					{
+						loadScores(Highscores);
+						saveScore(inputText,score,Highscores);
+						promptDone = 1;
+					}
 				}
 				else
 				{
@@ -114,6 +118,16 @@ int outroLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* backgroun
 					{
 						go = 1;
 					}
+					else if((event.key.keysym.sym == SDLK_UP) && (highScore>1))
+					{
+						highScore--;
+						lowScore--;
+					}
+					else if((event.key.keysym.sym == SDLK_DOWN) && (lowScore<SAVED_SCORES_AMOUNT))
+					{
+						highScore++;
+						lowScore++;
+					}
 				}
 			}
 			else if(event.type == SDL_TEXTINPUT)
@@ -123,6 +137,8 @@ int outroLoop(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* backgroun
 			}
 		}
 	}
+	//CLEANUP
 	SDL_StopTextInput();
+	free(Highscores);
 	return go;
 }
